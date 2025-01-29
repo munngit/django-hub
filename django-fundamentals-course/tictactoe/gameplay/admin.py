@@ -7,3 +7,5 @@ class GameAdmin (admin. ModelAdmin):
     list_editable = ('status' ,)
 admin.site.register(Move)
 
+class MoveAdmin(admin.ModelAdmin):
+    exclude = ['by_first_player']
