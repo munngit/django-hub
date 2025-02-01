@@ -1,0 +1,38 @@
+{% if games_list %}
+    <ul class="list-group">
+        {% for game in games_list %}
+            <li class="list-group-item">
+                <strong>Game ID:</strong> {{ game.id }} <br>
+                <strong>Opponent:</strong>
+                {% if game.second_player %}
+                    {% if game.first_player == user %}
+                        {{ game.second_player.username }}
+                    {% else %}
+                        {{ game.first_player.username }}
+                    {% endif %}
+                {% else %}
+                    <span class="text-warning">Waiting for opponent...</span>
+                {% endif %}
+                <br>
+                <strong>Status:</strong>
+                {% if game.status == 'F' %}
+                    <span class="text-primary">First Player's Turn</span>
+                {% elif game.status == 'S' %}
+                    <span class="text-primary">Second Player's Turn</span>
+                {% elif game.status == 'W' %}
+                    <span class="text-success">{{ game.first_player.username }} Won 🎉</span>
+                {% elif game.status == 'L' %}
+                    <span class="text-danger">{{ game.second_player.username }} Won 🎉</span>
+                {% elif game.status == 'D' %}
+                    <span class="text-muted">Game Drawn 🤝</span>
+                {% else %}
+                    <span class="text-warning">Pending</span>
+                {% endif %}
+                <br>
+                <a href="{% url 'game_detail' game.id %}" class="btn btn-info btn-sm mt-2">View Game</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No games available.</p>
+{% endif %}

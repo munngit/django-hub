@@ -1,8 +1,9 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-from gameplay import views  # ✅ Import views as a module
+from gameplay.views import game_detail, make_move, AllGamesList  # Import the class-based view
 
 urlpatterns = [
-    path('detail/<int:id>/', views.game_detail, name="gameplay_detail"),
-    path('make_move/<int:id>/', views.make_move, name='gameplay_make_move'),
+    path('game/<int:id>/', game_detail, name='game_detail'),
+    path('make_move/<int:id>/', make_move, name="gameplay_make_move"),
+    path('all/', AllGamesList.as_view(), name="all_games"),  # Added URL for AllGamesList
 ]
