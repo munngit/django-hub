@@ -14,7 +14,7 @@
         }
 
         .tictactoe-cell {
-            background-color: #deb827;
+            background-color: #debb27; /* Adjusted to match the original */
             width: 100px;
             height: 100px;
             text-align: center;
@@ -33,53 +33,53 @@
 {% endblock styling %}
 
 {% block content %}
-<div class="col-md-5">
-    {% if game.status == 'F' %}
-        <strong>{{ game.first_player }}</strong> to play
-    {% elif game.status == 'S' %}
-        <strong>{{ game.second_player }}</strong> to play
-    {% elif game.status == 'W' %}
-        <strong>{{ game.first_player }}</strong> won! 🎉
-    {% elif game.status == 'L' %}
-        <strong>{{ game.second_player }}</strong> won! 🎉
-    {% elif game.status == 'D' %}
-        <strong>It's a draw!</strong> 🤝
-    {% endif %}
-</div>
+    <div class="col-md-5">
 
-<div class="col-md-5">
-    <table class="table table-bordered tictactoe-table">
-        {% for row in board %}
-        <tr>
-            {% for cell in row %}
-            <td class="tictactoe-cell">
-                {% if cell == "X" %}
-                    X
-                {% elif cell == "O" %}
-                    O
-                {% else %}
-                    {% if form %}
-                        <a href="{% url 'gameplay_make_move' game.id %}?x={{ forloop.counter0 }}&y={{ forloop.parentloop.counter0 }}" class="empty-cell">
-                            Click
-                        </a>
-                    {% endif %}
-                {% endif %}
-            </td>
+        {% if game.status == 'F' %}
+            <strong>{{ game.first_player }}</strong> to play
+        {% elif game.status == 'S' %}
+            <strong>{{ game.second_player }}</strong> to play
+        {% elif game.status == 'W' %}
+            <strong>{{ game.first_player }}</strong> won! 🎉
+        {% elif game.status == 'L' %}
+            <strong>{{ game.second_player }}</strong> won! 🎉
+        {% elif game.status == 'D' %}
+            <strong>It's a draw!</strong> 🤝
+        {% endif %}
+
+        <table class="table table-bordered tictactoe-table">
+            {% for row in board %}
+                <tr>
+                    {% for cell in row %}
+                        <td class="tictactoe-cell">
+                            {% if cell %}
+                                {% if cell.by_first_player %}
+                                    X
+                                {% else %}
+                                    O
+                                {% endif %}
+                            {% else %}
+                                {% if form %}
+                                    <a href="{% url 'gameplay_make_move' game.id %}?x={{ forloop.counter0 }}&y={{ forloop.parentloop.counter0 }}" class="empty-cell">
+                                        Click
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+        </table>
+    </div>
 
-{% if form %}
-<div class="col-md-4">
-    <h3>It's your move</h3>
-    <form method="post" action="{% url 'gameplay_make_move' game.id %}">
-        {{ form | crispy }}
-        {% csrf_token %}
-        <button type="submit">Make move</button>
-    </form>
-</div>
-{% endif %}
-
+    {% if form %}
+        <div class="col-md-4">
+            <h3>It's your move</h3>
+            <form method="post" action="{% url 'gameplay_make_move' game.id %}">
+                {{ form|crispy }}
+                {% csrf_token %}
+                <button type="submit">Make move</button>
+            </form>
+        </div>
+    {% endif %}
 {% endblock content %}
