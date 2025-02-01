@@ -107,11 +107,25 @@ class Move(models.Model):
     game = models.ForeignKey(Game, related_name="move_set", on_delete=models.CASCADE, editable=False)
 
     def __eq__(self, other):
-        if other is None:
+        """Compares moves based on player and position."""
+        if not isinstance(other, Move):
             return False
-        return other.by_first_player == self.by_first_player
+        return (
+            self.by_first_player == other.by_first_player and
+            self.x == other.x and
+            self.y == other.y
+        )
+
+    def __hash__(self):
+        """Fixes unhashable type error by defining a unique hash based on primary key."""
+        return hash(self.id)
 
     def save(self, *args, **kwargs):
         """Saves the move and updates the game status properly."""
         super(Move, self).save(*args, **kwargs)
         self.game.update_after_move(self)
+        self.game.save()  # Ensure the game status is updated in the database
+
+    def __str__(self):
+        """Returns a readable representation of the move."""
+        return f"Move by {'First' if self.by_first_player else 'Second'} Player at ({self.x}, {self.y})"
