@@ -14,15 +14,17 @@ from gameplay.models import Game
 def home(request):
     """Render the home page with active and finished games, and invitations."""
     my_games = Game.objects.games_for_user(request.user)
-    active_games = my_games.active()
-    finished_games = my_games.difference(active_games)
-    invitations = request.user.invitations_received.all()
+
+    finished_games = my_games.filter(status__in=['W', 'L', 'D'])  # ✅ Only completed games
+    active_games = my_games.filter(status__in=['F', 'S', 'P'])  # ✅ Includes pending games
+
+    invitations = request.user.invitations_received.all()  # ✅ Define invitations
+
     return render(request, "player/home.html", {
         'active_games': active_games,
         'finished_games': finished_games,
         'invitations': invitations
     })
-
 
 @login_required
 def new_invitation(request):
@@ -51,7 +53,8 @@ def accept_invitation(request, id):
                 second_player=invitation.from_user,
             )
             invitation.delete()
-            return redirect(game)
+            return redirect("game_detail", id=game.id)
+
     else:
         return render(request, "player/accept_invitation_form.html", {'invitation': invitation})
 

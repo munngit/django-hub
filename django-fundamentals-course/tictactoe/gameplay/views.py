@@ -27,7 +27,9 @@ def make_move(request, id):
 
     if form.is_valid():
         move.save()
-        return redirect("gameplay_detail", id=id)
+        return redirect("game_detail", id=id)
+
+
     else:
         return render(request, "gameplay/game_detail.html", {'game': game, 'form': form})
 

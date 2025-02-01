@@ -14,16 +14,20 @@ GAME_STATUS_CHOICES = (
 
 BOARD_SIZE = 3
 
+from django.db import models
+from django.db.models import Q
+
 class GamesQuerySet(models.QuerySet):
     def games_for_user(self, user):
         return self.filter(
             Q(first_player=user) | Q(second_player=user)
-        )
+        ).distinct()  # ✅ Fixes duplicate games issue
 
     def active(self):
         return self.filter(
-            Q(status='F') | Q(status='S')
+            Q(status='F') | Q(status='S') | Q(status='P')  # ✅ Includes pending games
         )
+
 
 class Game(models.Model):
     first_player = models.ForeignKey(User, related_name="games_first_player", on_delete=models.CASCADE)
